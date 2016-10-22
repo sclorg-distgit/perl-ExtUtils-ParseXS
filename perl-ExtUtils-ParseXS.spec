@@ -5,7 +5,7 @@ Name:           %{?scl_prefix}perl-ExtUtils-ParseXS
 # Epoch to compete with perl.spec
 Epoch:          1
 Version:        3.31
-Release:        366%{?dist}
+Release:        367%{?dist}
 Summary:        Module and a script for converting Perl XS code into C code
 License:        GPL+ or Artistic
 Group:          Development/Libraries
@@ -13,6 +13,8 @@ URL:            http://search.cpan.org/dist/ExtUtils-ParseXS/
 Source0:        http://www.cpan.org/authors/id/S/SM/SMUELLER/ExtUtils-ParseXS-%{base_version}.tar.gz
 # Unbundled from perl 5.24.0
 Patch0:         ExtUtils-ParseXS-3.30-Upgrade-to-3.31.patch
+# Avoid loading optional modules from default . (CVE-2016-1238)
+Patch1:         ExtUtils-ParseXS-3.31-CVE-2016-1238-avoid-loading-optional-modules-from.patch
 BuildArch:      noarch
 BuildRequires:  coreutils
 BuildRequires:  findutils
@@ -67,6 +69,7 @@ the glue necessary to let Perl access those functions.
 %prep
 %setup -q -n ExtUtils-ParseXS-%{base_version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor && make %{?_smp_mflags}%{?scl:'}
@@ -90,6 +93,9 @@ ln -s ../../../../bin/xsubpp $RPM_BUILD_ROOT%{perl_vendorlib}/ExtUtils/
 %{_mandir}/man3/*
 
 %changelog
+* Wed Aug 03 2016 Jitka Plesnikova <jplesnik@redhat.com> - 1:3.31-367
+- Avoid loading optional modules from default . (CVE-2016-1238)
+
 * Mon Jul 11 2016 Petr Pisar <ppisar@redhat.com> - 1:3.31-366
 - SCL
 
