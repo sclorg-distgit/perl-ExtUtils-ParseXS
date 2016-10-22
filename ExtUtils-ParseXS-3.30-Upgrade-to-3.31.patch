@@ -1,0 +1,139 @@
+diff --git a/lib/ExtUtils/ParseXS.pm b/lib/ExtUtils/ParseXS.pm
+index f67a82d..32d74e1 100644
+--- a/lib/ExtUtils/ParseXS.pm
++++ b/lib/ExtUtils/ParseXS.pm
+@@ -11,7 +11,7 @@ use Symbol;
+ 
+ our $VERSION;
+ BEGIN {
+-  $VERSION = '3.30';
++  $VERSION = '3.31';
+ }
+ use ExtUtils::ParseXS::Constants $VERSION;
+ use ExtUtils::ParseXS::CountLines $VERSION;
+@@ -579,7 +579,7 @@ EOF
+           } );
+         }
+         else {
+-          print "\t$class *";
++          print "\t" . map_type($self, "$class *");
+           $self->{var_types}->{"THIS"} = "$class *";
+           $self->generate_init( {
+             type          => "$class *",
+diff --git a/lib/ExtUtils/ParseXS/Constants.pm b/lib/ExtUtils/ParseXS/Constants.pm
+index 8856551..2319a24 100644
+--- a/lib/ExtUtils/ParseXS/Constants.pm
++++ b/lib/ExtUtils/ParseXS/Constants.pm
+@@ -3,7 +3,7 @@ use strict;
+ use warnings;
+ use Symbol;
+ 
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/ParseXS/CountLines.pm b/lib/ExtUtils/ParseXS/CountLines.pm
+index 2f45292..222a95c 100644
+--- a/lib/ExtUtils/ParseXS/CountLines.pm
++++ b/lib/ExtUtils/ParseXS/CountLines.pm
+@@ -1,7 +1,7 @@
+ package ExtUtils::ParseXS::CountLines;
+ use strict;
+ 
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ our $SECTION_END_MARKER;
+ 
+diff --git a/lib/ExtUtils/ParseXS/Eval.pm b/lib/ExtUtils/ParseXS/Eval.pm
+index 8c075a3..7315332 100644
+--- a/lib/ExtUtils/ParseXS/Eval.pm
++++ b/lib/ExtUtils/ParseXS/Eval.pm
+@@ -2,7 +2,7 @@ package ExtUtils::ParseXS::Eval;
+ use strict;
+ use warnings;
+ 
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/ParseXS/Utilities.pm b/lib/ExtUtils/ParseXS/Utilities.pm
+index 4de9f4e..41a9f6d 100644
+--- a/lib/ExtUtils/ParseXS/Utilities.pm
++++ b/lib/ExtUtils/ParseXS/Utilities.pm
+@@ -5,7 +5,7 @@ use Exporter;
+ use File::Spec;
+ use ExtUtils::ParseXS::Constants ();
+ 
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ our (@ISA, @EXPORT_OK);
+ @ISA = qw(Exporter);
+diff --git a/lib/ExtUtils/Typemaps.pm b/lib/ExtUtils/Typemaps.pm
+index a16ae06..48d623e 100644
+--- a/lib/ExtUtils/Typemaps.pm
++++ b/lib/ExtUtils/Typemaps.pm
+@@ -2,7 +2,7 @@ package ExtUtils::Typemaps;
+ use 5.006001;
+ use strict;
+ use warnings;
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ require ExtUtils::ParseXS;
+ require ExtUtils::ParseXS::Constants;
+diff --git a/lib/ExtUtils/Typemaps/Cmd.pm b/lib/ExtUtils/Typemaps/Cmd.pm
+index ccd5efe..ffed504 100644
+--- a/lib/ExtUtils/Typemaps/Cmd.pm
++++ b/lib/ExtUtils/Typemaps/Cmd.pm
+@@ -2,7 +2,7 @@ package ExtUtils::Typemaps::Cmd;
+ use 5.006001;
+ use strict;
+ use warnings;
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ use ExtUtils::Typemaps;
+ 
+diff --git a/lib/ExtUtils/Typemaps/InputMap.pm b/lib/ExtUtils/Typemaps/InputMap.pm
+index 67ea1c2..86c646d 100644
+--- a/lib/ExtUtils/Typemaps/InputMap.pm
++++ b/lib/ExtUtils/Typemaps/InputMap.pm
+@@ -2,7 +2,7 @@ package ExtUtils::Typemaps::InputMap;
+ use 5.006001;
+ use strict;
+ use warnings;
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/Typemaps/OutputMap.pm b/lib/ExtUtils/Typemaps/OutputMap.pm
+index 42cbe5c..32cf9f9 100644
+--- a/lib/ExtUtils/Typemaps/OutputMap.pm
++++ b/lib/ExtUtils/Typemaps/OutputMap.pm
+@@ -2,7 +2,7 @@ package ExtUtils::Typemaps::OutputMap;
+ use 5.006001;
+ use strict;
+ use warnings;
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/Typemaps/Type.pm b/lib/ExtUtils/Typemaps/Type.pm
+index 7e0f4ba..abe93cb 100644
+--- a/lib/ExtUtils/Typemaps/Type.pm
++++ b/lib/ExtUtils/Typemaps/Type.pm
+@@ -4,7 +4,7 @@ use strict;
+ use warnings;
+ require ExtUtils::Typemaps;
+ 
+-our $VERSION = '3.30';
++our $VERSION = '3.31';
+ 
+ =head1 NAME
+ 
