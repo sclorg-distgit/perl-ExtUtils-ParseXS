@@ -1,0 +1,126 @@
+From 4f8996e1ea5a5f24b1d5b4462f56a917daa67a47 Mon Sep 17 00:00:00 2001
+From: Jitka Plesnikova <jplesnik@redhat.com>
+Date: Fri, 26 Apr 2019 15:59:36 +0200
+Subject: [PATCH] Upgrade to 3.40
+
+The generated prototype (with PROTOTYPES: ENABLE) would include
+OUTLIST parameters, but these aren't arguments to the perl function.
+
+---
+ lib/ExtUtils/ParseXS.pm            | 4 ++--
+ lib/ExtUtils/ParseXS/Constants.pm  | 2 +-
+ lib/ExtUtils/ParseXS/CountLines.pm | 2 +-
+ lib/ExtUtils/ParseXS/Eval.pm       | 2 +-
+ lib/ExtUtils/ParseXS/Utilities.pm  | 2 +-
+ t/002-more.t                       | 7 +++++--
+ 6 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/lib/ExtUtils/ParseXS.pm b/lib/ExtUtils/ParseXS.pm
+index e1f0940..fba7f4d 100644
+--- a/lib/ExtUtils/ParseXS.pm
++++ b/lib/ExtUtils/ParseXS.pm
+@@ -11,7 +11,7 @@ use Symbol;
+ 
+ our $VERSION;
+ BEGIN {
+-  $VERSION = '3.39';
++  $VERSION = '3.40';
+   require ExtUtils::ParseXS::Constants; ExtUtils::ParseXS::Constants->VERSION($VERSION);
+   require ExtUtils::ParseXS::CountLines; ExtUtils::ParseXS::CountLines->VERSION($VERSION);
+   require ExtUtils::ParseXS::Utilities; ExtUtils::ParseXS::Utilities->VERSION($VERSION);
+@@ -467,7 +467,7 @@ EOM
+         $self->{defaults}->{$args[$i]} = $2;
+         $self->{defaults}->{$args[$i]} =~ s/"/\\"/g;
+       }
+-      $self->{proto_arg}->[$i+1] = '$';
++      $self->{proto_arg}->[$i+1] = '$' unless $only_C_inlist_ref->{$args[$i]};
+     }
+     my $min_args = $num_args - $extra_args;
+     $report_args =~ s/"/\\"/g;
+diff --git a/lib/ExtUtils/ParseXS/Constants.pm b/lib/ExtUtils/ParseXS/Constants.pm
+index 45b5674..2c392e3 100644
+--- a/lib/ExtUtils/ParseXS/Constants.pm
++++ b/lib/ExtUtils/ParseXS/Constants.pm
+@@ -3,7 +3,7 @@ use strict;
+ use warnings;
+ use Symbol;
+ 
+-our $VERSION = '3.39';
++our $VERSION = '3.40';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/ParseXS/CountLines.pm b/lib/ExtUtils/ParseXS/CountLines.pm
+index 5b48449..a9258f9 100644
+--- a/lib/ExtUtils/ParseXS/CountLines.pm
++++ b/lib/ExtUtils/ParseXS/CountLines.pm
+@@ -1,7 +1,7 @@
+ package ExtUtils::ParseXS::CountLines;
+ use strict;
+ 
+-our $VERSION = '3.39';
++our $VERSION = '3.40';
+ 
+ our $SECTION_END_MARKER;
+ 
+diff --git a/lib/ExtUtils/ParseXS/Eval.pm b/lib/ExtUtils/ParseXS/Eval.pm
+index 9eba5e5..840bac7 100644
+--- a/lib/ExtUtils/ParseXS/Eval.pm
++++ b/lib/ExtUtils/ParseXS/Eval.pm
+@@ -2,7 +2,7 @@ package ExtUtils::ParseXS::Eval;
+ use strict;
+ use warnings;
+ 
+-our $VERSION = '3.39';
++our $VERSION = '3.40';
+ 
+ =head1 NAME
+ 
+diff --git a/lib/ExtUtils/ParseXS/Utilities.pm b/lib/ExtUtils/ParseXS/Utilities.pm
+index ae25b33..58f3856 100644
+--- a/lib/ExtUtils/ParseXS/Utilities.pm
++++ b/lib/ExtUtils/ParseXS/Utilities.pm
+@@ -5,7 +5,7 @@ use Exporter;
+ use File::Spec;
+ use ExtUtils::ParseXS::Constants ();
+ 
+-our $VERSION = '3.39';
++our $VERSION = '3.40';
+ 
+ our (@ISA, @EXPORT_OK);
+ @ISA = qw(Exporter);
+diff --git a/t/002-more.t b/t/002-more.t
+index 4aaa3ab..e982290 100644
+--- a/t/002-more.t
++++ b/t/002-more.t
+@@ -9,7 +9,7 @@ use ExtUtils::CBuilder;
+ use attributes;
+ use overload;
+ 
+-plan tests => 29;
++plan tests => 30;
+ 
+ my ($source_file, $obj_file, $lib_file);
+ 
+@@ -48,7 +48,7 @@ SKIP: {
+ }
+ 
+ SKIP: {
+-  skip "no dynamic loading", 25
++  skip "no dynamic loading", 26
+     if !$b->have_compiler || !$Config{usedl};
+   my $module = 'XSMore';
+   $lib_file = $b->link( objects => $obj_file, module_name => $module );
+@@ -92,6 +92,9 @@ SKIP: {
+ 
+   is_deeply [XSMore::outlist()], [ord('a'), ord('b')], 'the OUTLIST keyword';
+ 
++  # eval so compile-time sees any prototype
++  is_deeply [ eval 'XSMore::outlist()' ], [ord('a'), ord('b')], 'OUTLIST prototypes';
++
+   is XSMore::len("foo"), 3, 'the length keyword';
+ 
+   is XSMore::sum(5, 9), 14, 'the INCLUDE_COMMAND directive';
+-- 
+2.20.1
+
